@@ -1,5 +1,6 @@
 export default async function getTicket({ queueId, iin, phoneNum, branchId, local }) {
     try {
+      iin = '777777777777'
       const response = await fetch(`${process.env.REACT_APP_BACK_URL}/api/request/get-ticket`, {
         method: "POST",
         headers: {

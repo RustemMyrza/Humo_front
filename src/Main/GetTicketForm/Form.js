@@ -6,7 +6,6 @@ import "./TicketForm.css";
 export default function Form() {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const [iin, setIin] = useState("");
   const [phone, setPhone] = useState("");
   const [error, setError] = useState("");
 
@@ -14,51 +13,75 @@ export default function Form() {
     e.preventDefault();
     setError("");
 
-    if (!validateIIN(iin)) {
-      setError(t("error.iin"));
-      return;
-    }
-    if (!validatePhone(phone)) {
+    // Удаляем все нецифровые символы перед валидацией
+    const cleanPhone = phone.replace(/\D/g, '');
+    
+    if (!validatePhone(cleanPhone)) {
       setError(t("error.phone"));
       return;
     }
 
-    localStorage.setItem("iin", iin);
-    localStorage.setItem("phone", phone);
-    localStorage.setItem("ticketReceived", "false");
+    localStorage.setItem("phone", cleanPhone);
     localStorage.setItem("ticketTimestamp", Date.now());
 
     navigate("service/1005");
   };
 
-  function validateIIN(iin) {
-    return /^\d{12}$/.test(iin);
+  function validatePhone(phone) {
+    return /^992\d{9}$/.test(phone);
   }
 
-  function validatePhone(phone) {
-    return /^\+?\d{10,15}$/.test(phone);
-  }
+  // Функция для форматирования номера телефона
+  const formatPhoneNumber = (value) => {
+    if (!value) return "";
+    
+    // Удаляем все нецифровые символы
+    const cleanValue = value.replace(/\D/g, '');
+    
+    // Ограничиваем длину (992 + 9 цифр)
+    const limitedValue = cleanValue.substring(0, 12);
+    
+    // Форматируем номер
+    let formattedValue = "+ 992";
+    
+    if (limitedValue.length > 3) {
+      formattedValue += "-" + limitedValue.substring(3, 5);
+    }
+    if (limitedValue.length > 5) {
+      formattedValue += "-" + limitedValue.substring(5, 8);
+    }
+    if (limitedValue.length > 8) {
+      formattedValue += "-" + limitedValue.substring(8, 10);
+    }
+    if (limitedValue.length > 10) {
+      formattedValue += "-" + limitedValue.substring(10, 12);
+    }
+    
+    return formattedValue;
+  };
 
   return (
     <div className="ticket-form">
       <form onSubmit={handleSubmit}>
         <input
-          type="text"
-          name="iin"
-          value={iin}
-          onChange={(e) => {
-            setIin(e.target.value);
-            localStorage.setItem("iin", e.target.value);
-          }}
-          placeholder={t("form.iin_placeholder")}
-        />
-        <input
-          type="text"
+          type="tel"
           name="phone"
-          value={phone}
+          value={formatPhoneNumber(phone)}
           onChange={(e) => {
-            setPhone(e.target.value);
-            localStorage.setItem("phone", e.target.value);
+            // Удаляем все нецифровые символы
+            const cleanValue = e.target.value.replace(/\D/g, '');
+            
+            // Ограничиваем длину (992 + 9 цифр)
+            const limitedValue = cleanValue.substring(0, 12);
+            
+            // Устанавливаем неформатированное значение в state
+            setPhone(limitedValue);
+          }}
+          onFocus={(e) => {
+            // При фокусе, если поле пустое, устанавливаем начало номера
+            if (!phone) {
+              setPhone("992");
+            }
           }}
           placeholder={t("form.phone_placeholder")}
         />

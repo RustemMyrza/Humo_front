@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
@@ -36,37 +36,6 @@ i18n
   });
 
 function App() {
-  
-  useEffect(() => {
-    const ticketReceived = localStorage.getItem("ticketReceived");
-    const ticketTimestamp = localStorage.getItem("ticketTimestamp");
-
-    const isTicketExpired =
-      ticketTimestamp && Date.now() - Number(ticketTimestamp) > 3600000;
-
-    if (!ticketReceived || isTicketExpired) {
-      clearFormData();
-    }
-
-    const handlePageClose = (event) => {
-        if (localStorage.getItem("ticketReceived") !== "true") {
-          clearFormData();
-        }
-        
-        event.preventDefault();
-        event.returnValue = ""; // Показывает стандартное предупреждение о закрытии страницы
-      };
-
-      window.addEventListener("beforeunload", handlePageClose);
-      return () => window.removeEventListener("beforeunload", handlePageClose);
-  }, []);
-
-  function clearFormData() {
-    localStorage.removeItem("iin");
-    localStorage.removeItem("phone");
-    localStorage.removeItem("ticketReceived");
-    localStorage.removeItem("ticketTimestamp");
-  }
 
   return (
     <BrowserRouter>

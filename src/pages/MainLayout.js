@@ -37,10 +37,9 @@ function MainLayout() {
 
   useEffect(() => {
     const fetchTicketData = async () => {
-      const ticketReceived = localStorage.getItem("ticketReceived");
       const eventId = localStorage.getItem("eventId");
 
-      if (ticketReceived === 'true' && eventId !== null) {
+      if (eventId !== null) {
         try {
           const ticketInfoResponse = await fetch(`${process.env.REACT_APP_BACK_URL}/api/get-ticket-info?eventId=${eventId}&branchId=${branchId}`);
           const ticketInfoResult = await ticketInfoResponse.json();
@@ -88,8 +87,6 @@ function MainLayout() {
         } catch (error) {
           console.error('Ошибка при попытке сделать запрос:', error);
         }
-      } else {
-        localStorage.setItem('ticketReceived', false);
       }
     };
     fetchTicketData();
