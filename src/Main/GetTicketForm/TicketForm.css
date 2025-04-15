@@ -29,13 +29,13 @@ input {
 }
 
 input:focus {
-    border-color: #047b74;
+    border-color: #b97090;
     box-shadow: 0 0 5px rgba(3, 92, 86, 0.5);
     outline: none;
 }
 
 .form-button {
-    background: #FF8C1C;
+    background: #b83970;
     color: white;
     border: none;
     padding: 12px;

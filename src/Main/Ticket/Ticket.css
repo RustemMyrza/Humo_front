@@ -30,7 +30,7 @@
 .ticket-number {
     font-size: 24px;
     font-weight: bold;
-    color: #FF8C1C;
+    color: #b83970;
     margin-bottom: 4px;
 }
 
@@ -62,7 +62,7 @@
     font-size: 22px;
     font-weight: bold;
     margin-bottom: 10px;
-    color: #035c56;
+    color: red;
     text-align: center;
     /* Комбинированная анимация: мигание и пульсация */
     animation: blinkPulse 1.5s infinite;
