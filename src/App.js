@@ -12,14 +12,14 @@ import BranchQR from "./BranchQR.js";
 import "./App.css";
 import translationEN from "./locales/en/translation.json";
 import translationRU from "./locales/ru/translation.json";
-import translationKZ from "./locales/kz/translation.json";
+import translationtj from "./locales/tj/translation.json";
 import Ticket from "./Main/Ticket/Ticket.js";
 
 // Конфигурация локализации
 const resources = {
   en: { translation: translationEN },
   ru: { translation: translationRU },
-  kz: { translation: translationKZ },
+  tj: { translation: translationtj },
 };
 
 i18n

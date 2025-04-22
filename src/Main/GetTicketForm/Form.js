@@ -24,7 +24,7 @@ export default function Form() {
     localStorage.setItem("phone", cleanPhone);
     localStorage.setItem("ticketTimestamp", Date.now());
 
-    navigate("service/1005");
+    navigate(`service/${process.env.REACT_APP_BASE_SERVICE}`);
   };
 
   function validatePhone(phone) {

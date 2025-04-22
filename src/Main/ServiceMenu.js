@@ -6,11 +6,12 @@ import { initReactI18next } from "react-i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 import translationEN from "../locales/en/translation.json";
 import translationRU from "../locales/ru/translation.json";
-import translationKZ from "../locales/kz/translation.json";
+import translationTJ from "../locales/tj/translation.json";
 import { useParams, useNavigate } from "react-router";
 import './button.css';
 import './MainContent.css';
 import GetTicketRequest from './Ticket/RequestForGetTicket.js';
+import GetTicketSMS from './Ticket/RequestForGetSMS.js';
 import Ticket from './Ticket/Ticket.js';
 
 
@@ -21,8 +22,8 @@ const resources = {
   ru: {
     translation: translationRU,
   },
-  kz: {
-    translation: translationKZ,
+  tj: {
+    translation: translationTJ,
   },
 };
 
@@ -49,8 +50,8 @@ i18n
         switch (lang) {
           case 'ru':
             return service.name_ru;
-          case 'kz':
-            return service.name_kz;
+          case 'tj':
+            return service.name_tj;
         }
       }
   
@@ -81,7 +82,7 @@ function MainContent() {
     let serviceName = null;
     // let branchName = null;
 
-    if (serviceId !== 1005) {
+    if (serviceId !== Number(process.env.REACT_APP_BASE_SERVICE)) {
       serviceName = getParentName(services, serviceId, 'queueId', i18n.language);
     }
 
@@ -149,6 +150,17 @@ function MainContent() {
               }
   
               console.log("Полученные данные:", data);
+              const ticketNum = data.ticketNo;
+              console.log('Номер талона:', ticketNum)
+              const smsTicketStatus = await GetTicketSMS({
+                ticketNum,
+                phoneNum
+              })
+
+              if (!smsTicketStatus || smsTicketStatus.status === "false") { // Проверяем статус ответа
+                throw new Error(smsTicketStatus?.message || "Ошибка при отправке смс");
+              }
+
               setTicketData(data);
             } catch (error) {
               console.error("Ошибка запроса:", error);
@@ -195,19 +207,19 @@ function MainContent() {
     return (
         <div className='main'>
             <main>
-            <h2 className='main-title'>{ serviceId !== '1005' ? serviceName : t("mainTitleInstruction") }</h2>
+            <h2 className='main-title'>{ serviceId !== process.env.REACT_APP_BASE_SERVICE ? serviceName : t("mainTitleInstruction") }</h2>
                 {/* <h4 className='branch-title'>{ branchName ? branchName : 'Филиал не найден' }</h4> */}
-                {serviceId !== '1005' && (
+                {serviceId !== process.env.REACT_APP_BASE_SERVICE && (
                   <button
                     onClick={() => navigate(-1)}
                     className="go-back">
-                    <span>Назад</span>
+                    <span>{ i18n.language === 'ru' ? 'Назад' : 'Бозгашт' }</span>
                   </button>
                 )}
                 <div className='service-types-list' style={serviceListStyle}>
                 { visibleServices.length > 0 ? visibleServices.map((service) => (
                   <ServiceType
-                    serviceText={ i18n.language === 'ru' ? service.name_ru : service.name_kz}
+                    serviceText={ i18n.language === 'ru' ? service.name_ru : service.name_tj}
                     queueId={service.queueId} // Данные с API
                     serviceId={service.parentId}
                     link={`/branch/${branchId}/service/${service.queueId}`}
